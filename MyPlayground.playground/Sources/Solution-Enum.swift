@@ -2,15 +2,11 @@ import UIKit
 
 protocol BasicField {
     var name: String { get }
-    var subFields: String { get }
 }
 
 extension Array where Element: BasicField {
     func toString() -> String {
-        let expanded = self.map { field in
-            return field.name + field.subFields.bracket(ignoreEmptyString: true)
-            }.joined(separator: ",")
-        return expanded
+        return self.map { $0.name }.joined(separator: ",")
     }
 }
 
@@ -19,7 +15,7 @@ extension String {
         if self.isEmpty && ignoreEmptyString {
             return self
         }
-        return String(format: " { %@ } ", self)
+        return String(format: "{%@}", self)
     }
 }
 
@@ -45,21 +41,12 @@ extension User {
             switch self {
             case .all:
                 return "*"
-            case .car:
-                return "car"
+            case .car(let fieldsDescriptor):
+                return "car " + fieldsDescriptor.toString().bracket(ignoreEmptyString: true)
             case .age:
                 return "age"
             case .name:
                 return "name"
-            }
-        }
-        
-        var subFields: String {
-            switch self {
-            case .car(let fieldsDescriptor):
-                return fieldsDescriptor.toString()
-            default:
-                return ""
             }
         }
     }
@@ -82,10 +69,6 @@ extension Car {
             case .model:
                 return "model"
             }
-        }
-        
-        var subFields: String {
-            return ""
         }
     }
 }
