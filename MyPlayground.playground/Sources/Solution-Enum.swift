@@ -33,7 +33,7 @@ class Car {
 }
 
 extension User {
-    typealias FieldsDescriptor = () ->  [User.Field]
+    typealias FieldsDescriptor = [User.Field]
     
     enum Field: BasicField {
         case all
@@ -57,7 +57,7 @@ extension User {
         var subFields: String {
             switch self {
             case .car(let fieldsDescriptor):
-                return fieldsDescriptor().toString()
+                return fieldsDescriptor.toString()
             default:
                 return ""
             }
@@ -66,7 +66,7 @@ extension User {
 }
 
 extension Car {
-    typealias FieldsDescriptor = () -> [Car.Field]
+    typealias FieldsDescriptor = [Car.Field]
     
     enum Field: BasicField {
         case model
@@ -96,8 +96,8 @@ extension Car {
 class UserRequest {
     var xField: String
     
-    init(xFieldDescriptor: User.FieldsDescriptor) {
-        self.xField = xFieldDescriptor().toString()
+    init(xFieldDescriptor: User.Field...) {
+        self.xField = xFieldDescriptor.toString()
     }
 }
 
@@ -105,7 +105,7 @@ class UserRequest {
 
 public func demoEnum() {
     // XField = "* , name , car { * , color }"
-    let request = UserRequest(xFieldDescriptor:  {[ .all, .name, .car {[ .all, .color ]} ]})
+    let request = UserRequest(xFieldDescriptor: .all, .name, .car ([ .all, .color ]) )
     print(request.xField)
 }
 
